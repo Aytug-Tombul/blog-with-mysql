@@ -1,17 +1,19 @@
-var loginDiv=` <div id="loginStatus">
+var loginDiv = ` <div id="loginStatus">
 <input type="text" class="username" style="margin-bottom : 10px;" placeholder="Username"><br>
 <input type="password" class="password" style="margin-bottom : 10px;" placeholder="Password"><br>
 <button type="button" id="login">login</button>
 <button type="button" id="register">register</button><br>
 <br>
 <a  onclick="forgot()">Forgot Password ? (Click)</a>
-</div>`
+</div>`;
 
 var forgotDiv = ` <div id="forgotStatus">
+<form>
 <h2>Forgot Password</h2>
 <a>Input E-mail:</a>
-<input type="text" class="email" style="margin-bottom : 10px;" placeholder="Email"><br>
-<button type="button" id="Submit">Submit</button>
+<input type="text" class="forgotEmail" style="margin-bottom : 10px;" placeholder="Email"><br>
+<button type="button" id="forgotBtn">Submit</button>
+<form>
 </div>`;
 
 var registerDiv = `<div id="RegisterStatus">
@@ -28,26 +30,22 @@ var registerDiv = `<div id="RegisterStatus">
 <br>
 </div>`;
 
-var usernames=""
-
-
-
-function getUsers(){
+$(document).on("click", "#forgotBtn", function() {
+  var forgotEmail= $(".forgotEmail").val();
   $.ajax({
-    url: "getUsers.php",
-    type: 'GET',
-    dataType: 'json',
-    success: function(data) {
-        console.log(data);
+    url: "forgotpassword.php",
+    type: "POST",
+    dataType: "text",
+    data: {email : forgotEmail},
+    success: function(response) {
+        window.alert(response);
     }
+  });
 });
-}
-
 
 function forgot() {
   $("#loginStatus").remove();
   $("body").append(forgotDiv);
-  getUsers();
 }
 $(document).on("click", "#register", function() {
   $("#loginStatus").remove();
@@ -55,28 +53,29 @@ $(document).on("click", "#register", function() {
 });
 
 $(document).on("click", "#signup", function() {
+  var images = $("#image")[0].files[0];
+  var usernameVal = $("#username").val();
+  var passwordVal = $("#password").val();
+  var emailVal = $("#email").val();
+  var referrerVal = $("#referrer").val();
+ 
   var fd = new FormData();
-  var images = $('#image')[0].files[0];
-  var usernameVal =$('#username').val();
-  var passwordVal =$('#password').val();
-  var emailVal =$('#email').val();
-  var referrerVal =$('#referrer').val();
-  fd.append('username',usernameVal);
-  fd.append('password',passwordVal);
-  fd.append('email',emailVal);
-  fd.append('referrer',referrerVal);
-  fd.append('image',images);
+  fd.append("username", usernameVal);
+  fd.append("password", passwordVal);
+  fd.append("email", emailVal);
+  fd.append("referrer", referrerVal);
+  fd.append("image", images);
   $.ajax({
     url: "register.php",
     type: "POST",
-    dataType: 'text',
+    dataType: "text",
     data: fd,
     processData: false,
     contentType: false,
-    success: function() {
-      $("#RegisterStatus").remove();
-      $("body").append(loginDiv);
-  }
-
-  })
+    success: function(data) {
+        window.alert(data)
+        $("#RegisterStatus").remove();
+        $("body").append(loginDiv);
+    }
+  });
 });
