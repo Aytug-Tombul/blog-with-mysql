@@ -24,7 +24,7 @@ if(isset($_GET['email'])&& isset($_GET['token'])){
         $pdo->query("UPDATE users_tbl SET token='' password = '$newPassword'
         WHERE email = '$email'
         ");
-        echo"Your New Password Is $newPassword<br><a href='index.html'";
+        echo"Your New Password Is $newPassword<br><a href='index.html'>Click Here To Login</a>";
     }else{
         redirectToIndex();
     }
