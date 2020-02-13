@@ -43,6 +43,32 @@ $(document).on("click", "#forgotBtn", function() {
   });
 });
 
+
+
+
+
+$(document).on("click", "#login", function() {
+  var loginUserName = $("#username").val();
+  var loginUserPw=$("#password").val();
+  $.ajax({
+    url: "login.php",
+    type: "POST",
+    dataType: "text",
+    data: {username : loginUserName, password : loginUserPw},
+    success: function(res) {
+        if (res==1) {
+          window.alert("Login Success Welcome "+loginUserName);
+          $("#loginStatus").remove();
+        }else{
+          window.alert("Login failed Please Check your username and password")
+        }
+    }
+  });
+});
+
+
+
+
 function forgot() {
   $("#loginStatus").remove();
   $("body").append(forgotDiv);

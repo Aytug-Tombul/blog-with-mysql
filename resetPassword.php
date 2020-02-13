@@ -15,7 +15,7 @@ if(isset($_GET['email'])&& isset($_GET['token'])){
     $email= $_GET['email'];
     $token= $_GET['token'];
     $stmt=$pdo->query("SELECT id FROM users_tbl WHERE 
-    email = '$email' AND token='$token' AND token<>'' AND tokenExpire>NOW()
+    email = '$email' AND token='$token' AND token<>'' AND token_Expire > NOW()
     ");
     
 
