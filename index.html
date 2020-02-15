@@ -1,23 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <title>Blog MYSQL</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <script src="scripts.js"></script>
-</head>
+  </head>
 
-<body>
-    <h1>Blog With MYSQL</h1>
-    <div id="loginStatus">
-        <input type="text" class="username" style="margin-bottom : 10px;" placeholder="Username"><br>
-        <input type="password" class="password" style="margin-bottom : 10px;" placeholder="Password"><br>
-        <button type="button" id="login">login</button>
-        <button type="button" id="register">register</button><br>
-        <br>
-        <a  onclick="forgot()">Forgot Password ? (Click)</a>
+  <body>
+    <div class="jumbotron">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-3">
+            <img
+              src="https://cdn.clipart.email/9d83318f187fbbe534907687b4fe61bc_scbrain-sticker-brain-clipart-transparent-background-png-_880-784.jpeg#.XkfftOR0GN8.link"
+              style="width:200px;"
+            />
+          </div>
+          <div class="col-md-9">
+            <h1>Blog wıth MySQL</h1>
+            <h2>Post it What Your Think!..</h2>
+          </div>
+        </div>
+      </div>
     </div>
-
-</body>
+    <div id="loginStatus">
+        <form>
+          <div class="form-group col-md-3">
+            <label>Username</label>
+            <input
+              type="text"
+              class="form-control"
+              id="username"
+              placeholder="Username"
+            />
+            <small class="form-text text-muted"
+              >We'll never share your username with anyone else.</small
+            >
+          </div>
+          <div class="form-group col-md-3">
+            <label>Password</label>
+            <input
+              type="password"
+              class="form-control"
+              id="password"
+              placeholder="Password"
+            />
+          </div>
+          <div class="form-group col-md-3">
+            <button type="button" class="btn btn-primary" id="login">
+              login
+            </button>
+            <button type="button" class="btn btn-primary" id="register">
+              register</button
+            > 
+            <span class="badge badge-pill badge-warning" onclick=forgot()>Forgot Password ?</span>
+          </div>
+        </form>
+      </div>
+  </body>
 </html>

@@ -1,19 +1,54 @@
 var loginDiv = ` <div id="loginStatus">
-<input type="text" class="username" style="margin-bottom : 10px;" placeholder="Username"><br>
-<input type="password" class="password" style="margin-bottom : 10px;" placeholder="Password"><br>
-<button type="button" id="login">login</button>
-<button type="button" id="register">register</button><br>
-<br>
-<a  onclick="forgot()">Forgot Password ? (Click)</a>
+<form>
+  <div class="form-group col-md-3">
+    <label>Username</label>
+    <input
+      type="text"
+      class="form-control"
+      id="username"
+      placeholder="Username"
+    />
+    <small class="form-text text-muted"
+      >We'll never share your username with anyone else.</small
+    >
+  </div>
+  <div class="form-group col-md-3">
+    <label>Password</label>
+    <input
+      type="password"
+      class="form-control"
+      id="password"
+      placeholder="Password"
+    />
+  </div>
+  <div class="form-group col-md-3">
+    <button type="button" class="btn btn-primary" id="login">
+      login
+    </button>
+    <button type="button" class="btn btn-primary" id="register">
+      register</button
+    > 
+    <span class="badge badge-pill badge-warning" onclick=forgot()>Forgot Password ?</span>
+  </div>
+</form>
 </div>`;
 
 var forgotDiv = ` <div id="forgotStatus">
 <form>
-<h2>Forgot Password</h2>
-<a>Input E-mail:</a>
-<input type="text" class="forgotEmail" style="margin-bottom : 10px;" placeholder="Email"><br>
-<button type="button" id="forgotBtn">Submit</button>
-<form>
+<div class="form-group col-md-3">
+  <label>Email</label>
+  <input
+    type="text"
+    class="form-control"
+    id="forgotEmail"
+    placeholder="Email"
+  />
+  <small class="form-text text-muted"
+    >We'll never share your Email with anyone else.</small
+  >
+  <button type="button" class="btn btn-primary" id="forgotBtn">Submit</button>
+</div>
+</form> 
 </div>`;
 
 var registerDiv = `<div id="RegisterStatus">
@@ -31,43 +66,37 @@ var registerDiv = `<div id="RegisterStatus">
 </div>`;
 
 $(document).on("click", "#forgotBtn", function() {
-  var forgotEmail= $(".forgotEmail").val();
+  var forgotEmail = $("#forgotEmail").val();
   $.ajax({
     url: "forgotpassword.php",
     type: "POST",
     dataType: "text",
-    data: {email : forgotEmail},
+    data: { email: forgotEmail },
     success: function(response) {
-        window.alert(response);
+      window.alert(response);
     }
   });
 });
 
-
-
-
-
 $(document).on("click", "#login", function() {
   var loginUserName = $("#username").val();
-  var loginUserPw=$("#password").val();
+  var loginUserPw = $("#password").val();
   $.ajax({
     url: "login.php",
     type: "POST",
     dataType: "text",
-    data: {username : loginUserName, password : loginUserPw},
+    data: { username: loginUserName, password: loginUserPw },
     success: function(res) {
-        if (res==1) {
-          window.alert("Login Success Welcome "+loginUserName);
-          $("#loginStatus").remove();
-        }else{
-          window.alert("Login failed Please Check your username and password")
-        }
+      res = JSON.parse(res);
+      if (res.result == "success") {
+        window.alert("Login Success Welcome " + res.username);
+        $("#loginStatus").remove();
+      } else {
+        window.alert("Login failed Please Check your username and password");
+      }
     }
   });
 });
-
-
-
 
 function forgot() {
   $("#loginStatus").remove();
@@ -84,7 +113,7 @@ $(document).on("click", "#signup", function() {
   var passwordVal = $("#password").val();
   var emailVal = $("#email").val();
   var referrerVal = $("#referrer").val();
- 
+
   var fd = new FormData();
   fd.append("username", usernameVal);
   fd.append("password", passwordVal);
@@ -99,9 +128,9 @@ $(document).on("click", "#signup", function() {
     processData: false,
     contentType: false,
     success: function(data) {
-        window.alert(data)
-        $("#RegisterStatus").remove();
-        $("body").append(loginDiv);
+      window.alert(data);
+      $("#RegisterStatus").remove();
+      $("body").append(loginDiv);
     }
   });
 });
