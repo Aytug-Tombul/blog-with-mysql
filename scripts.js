@@ -119,6 +119,8 @@ $(document).on("click", "#login", function() {
                 loggedUsername = res.username;
                 $("#loginStatus").remove();
                 $("body").append(blogDiv);
+                listPosts();
+                
             } else {
                 window.alert("Login failed Please Check your username and password");
             }
@@ -126,13 +128,12 @@ $(document).on("click", "#login", function() {
     });
 });
 
-function postIt(post, username, postID = null) {
+function postIt(post, username, postID = null,postdate) {
     postDiv = `<div class="card mb-3" id="listedPost">
     <img class="card-img-top">
     <div class="card-body">
-      <h5 class="card-postUsername">` + username + `</h5>
       <p class="card-text">` + post + `</p>
-      <p class="card-text"><small class="text-muted">` + postID +
+      <p class="card-text text-right"><small class="text-muted">`+"#"+ postID +"  "+username+" "+postdate+
         `</small></p>
     </div>
   </div>`
@@ -176,16 +177,30 @@ $(document).on("click", "#signup", function() {
     });
 });
 
+
+function listPosts() {
+  $.ajax({
+    url: "getPosts.php",
+    type: "GET",
+    success: function(data) {
+      data=JSON.parse(data);
+      for (let i = 0; i < data.length; i++) {
+        postIt(data[i].post,data[i].username,data[i].id,data[i].post_date);
+      }
+    }
+});
+  
+}
 $(document).on("click", "#postIt", function() {
     var post = $("#post").val();
     $.ajax({
         url: "post.php",
         type: "POST",
         data: { post: post, username: loggedUsername },
-        success: function(res) {
-            res = JSON.parse(res);
-            console.log();
-            postIt(post, loggedUsername, res[0].id);
+        success: function() {
+          $("#posts").empty();
+          listPosts();
+          $("#post").val("");
         }
     });
 

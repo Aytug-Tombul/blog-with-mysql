@@ -21,7 +21,7 @@ if(isset($_GET['email'])&& isset($_GET['token'])){
 
     if ($stmt->rowCount() > 0) {
         $newPassword = generetaNewString();
-        $pdo->query("UPDATE users_tbl SET token='' password = '$newPassword'
+        $pdo->query("UPDATE users_tbl SET token='', password = '$newPassword'
         WHERE email = '$email'
         ");
         echo"Your New Password Is $newPassword<br><a href='index.html'>Click Here To Login</a>";
