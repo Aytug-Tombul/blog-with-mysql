@@ -84,7 +84,7 @@ var registerDiv = `<div id="RegisterStatus">
 </div>`;
 
 var blogDiv = `<div class="container">
-<div id="posts"></div>
+<div id="posts"style="padding: 10px;"></div>
 <div class="form-group green-border-focus">
 <textarea class="form-control" id="post" rows="5" placeholder="Write Something Here..."></textarea>
 <button type="button" class="btn btn-primary btn-lg" id="postIt">POST</button>
@@ -92,116 +92,137 @@ var blogDiv = `<div class="container">
 </div>`;
 var loggedUsername = "";
 $(document).on("click", "#forgotBtn", function() {
-    var forgotEmail = $("#forgotEmail").val();
-    $.ajax({
-        url: "forgotpassword.php",
-        type: "POST",
-        dataType: "text",
-        data: { email: forgotEmail },
-        success: function(response) {
-            window.alert(response);
-        }
-    });
+  var forgotEmail = $("#forgotEmail").val();
+  $.ajax({
+    url: "forgotpassword.php",
+    type: "POST",
+    dataType: "text",
+    data: { email: forgotEmail },
+    success: function(response) {
+      window.alert(response);
+    }
+  });
 });
+
+function openPanel() {
+  var buttonsDiv = `<div class="form-group col-md-3">
+ <button type="button" class="btn btn-primary" id="Delete">
+   Delete
+ </button>
+ <div class="form-group col-md-3">
+            <button type="button" class="btn btn-primary" id="Update">
+              Update
+            </button>`;
+  $("#blog").append(buttonsDiv);
+}
 
 $(document).on("click", "#login", function() {
-    var loginUserName = $("#username").val();
-    var loginUserPw = $("#password").val();
-    $.ajax({
-        url: "login.php",
-        type: "POST",
-        dataType: "text",
-        data: { username: loginUserName, password: loginUserPw },
-        success: function(res) {
-            res = JSON.parse(res);
-            if (res.result == "success") {
-                window.alert("Login Success Welcome " + res.username);
-                loggedUsername = res.username;
-                $("#loginStatus").remove();
-                $("body").append(blogDiv);
-                listPosts();
-                
-            } else {
-                window.alert("Login failed Please Check your username and password");
-            }
+  var loginUserName = $("#username").val();
+  var loginUserPw = $("#password").val();
+  $.ajax({
+    url: "login.php",
+    type: "POST",
+    dataType: "text",
+    data: { username: loginUserName, password: loginUserPw },
+    success: function(res) {
+      res = JSON.parse(res);
+      if (res.result == "success") {
+        window.alert("Login Success Welcome " + res.username);
+        loggedUsername = res.username;
+        $("#loginStatus").remove();
+        $("body").append(blogDiv);
+        listPosts();
+        var panel = res.panelBtn;
+        if (res.panelBtn != null) {
+          $("#addHere").append(String(panel));
         }
-    });
+      } else {
+        window.alert("Login failed Please Check your username and password");
+      }
+    }
+  });
 });
 
-function postIt(post, username, postID = null,postdate) {
-    postDiv = `<div class="card mb-3" id="listedPost">
+function postIt(post, username, postID = null, postdate) {
+  postDiv =
+    `<div class="card mb-3" id="listedPost">
     <img class="card-img-top">
     <div class="card-body">
-      <p class="card-text">` + post + `</p>
-      <p class="card-text text-right"><small class="text-muted">`+"#"+ postID +"  "+username+" "+postdate+
-        `</small></p>
+      <p class="card-text">` +
+    post +
+    `</p>
+      <p class="card-text text-right"><small class="text-muted">` +
+    "#" +
+    postID +
+    "  " +
+    username +
+    " " +
+    postdate +
+    `</small></p>
     </div>
-  </div>`
-    $("#posts").append(postDiv);
+  </div>`;
+  $("#posts").append(postDiv);
 }
 
 function forgot() {
-    $("#loginStatus").remove();
-    $("body").append(forgotDiv);
+  $("#loginStatus").remove();
+  $("body").append(forgotDiv);
 }
 $(document).on("click", "#register", function() {
-    $("#loginStatus").remove();
-    $("body").append(registerDiv);
+  $("#loginStatus").remove();
+  $("body").append(registerDiv);
 });
 
 $(document).on("click", "#signup", function() {
-    var images = $("#image")[0].files[0];
-    var usernameVal = $("#username").val();
-    var passwordVal = $("#password").val();
-    var emailVal = $("#email").val();
-    var referrerVal = $("#referrer").val();
+  var images = $("#image")[0].files[0];
+  var usernameVal = $("#username").val();
+  var passwordVal = $("#password").val();
+  var emailVal = $("#email").val();
+  var referrerVal = $("#referrer").val();
 
-    var fd = new FormData();
-    fd.append("username", usernameVal);
-    fd.append("password", passwordVal);
-    fd.append("email", emailVal);
-    fd.append("referrer", referrerVal);
-    fd.append("image", images);
-    $.ajax({
-        url: "register.php",
-        type: "POST",
-        dataType: "text",
-        data: fd,
-        processData: false,
-        contentType: false,
-        success: function(data) {
-            window.alert(data);
-            $("#RegisterStatus").remove();
-            $("body").append(loginDiv);
-        }
-    });
+  var fd = new FormData();
+  fd.append("username", usernameVal);
+  fd.append("password", passwordVal);
+  fd.append("email", emailVal);
+  fd.append("referrer", referrerVal);
+  fd.append("image", images);
+  $.ajax({
+    url: "register.php",
+    type: "POST",
+    dataType: "text",
+    data: fd,
+    processData: false,
+    contentType: false,
+    success: function(data) {
+      window.alert(data);
+      $("#RegisterStatus").remove();
+      $("body").append(loginDiv);
+    }
+  });
 });
-
 
 function listPosts() {
   $.ajax({
     url: "getPosts.php",
     type: "GET",
     success: function(data) {
-      data=JSON.parse(data);
+      data = JSON.parse(data);
       for (let i = 0; i < data.length; i++) {
-        postIt(data[i].post,data[i].username,data[i].id,data[i].post_date);
+        postIt(data[i].post, data[i].username, data[i].id, data[i].post_date);
       }
     }
-});
-  
+  });
 }
 $(document).on("click", "#postIt", function() {
-    var post = $("#post").val();
-    $.ajax({
-        url: "post.php",
-        type: "POST",
-        data: { post: post, username: loggedUsername },
-        success: function() {
-          $("#posts").empty();
-          listPosts();
-          $("#post").val("");
-        }
-    });
-
+  var post = $("#post").val();
+  $.ajax({
+    url: "post.php",
+    type: "POST",
+    data: { post: post, username: loggedUsername },
+    success: function() {
+      $("#posts").empty();
+      listPosts();
+      $("#post").val("");
+    }
+  });
 });

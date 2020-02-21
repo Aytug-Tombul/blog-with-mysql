@@ -65,7 +65,6 @@ function postToDatabase($post ,$username ,$tablename){
             while($row = $stmt3->fetch(PDO::FETCH_ASSOC)) {
     
                 $postId[] = $row;
-                // Function to convert array into JSON 
                 
                   
             }
