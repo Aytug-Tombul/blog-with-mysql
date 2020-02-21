@@ -22,13 +22,28 @@ function login($tablename, $username, $password)
     $pdo = new PDO("mysql:host=$servername;dbname=$DBname", $DBusername, $DBpassword);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $sql = "SELECT id FROM $tablename WHERE username = '$username' AND password = '$password'";
+    $sql = "SELECT role FROM $tablename WHERE username = '$username' AND password = '$password'";
     $stmt = $pdo->query($sql);
+    $r = $stmt->fetch();
+    $role = $r['role'];
     if ($stmt->rowCount() > 0) {
-        $res = array(
-            "result" => "success",
-            "username" => $username
-        );
+        
+        
+        if ($role=="admin") {
+            $res = array(
+                "result" => "success",
+                "username" => $username,
+                
+                "panelBtn"=>'<li class="nav-item active"><a class="nav-link text-white" onclick=openPanel() >Panel<span class="sr-only">(current)</span></a></li>'
+            );
+        }else{
+            $res = array(
+                "result" => "success",
+                "username" => $username,
+                "panelBtn"=>null
+            );
+        }
+        
         echo json_encode($res);
     } else {
         $res = array(
@@ -65,6 +80,7 @@ function postToDatabase($post ,$username ,$tablename){
             while($row = $stmt3->fetch(PDO::FETCH_ASSOC)) {
     
                 $postId[] = $row;
+                // Function to convert array into JSON 
                 
                   
             }
