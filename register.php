@@ -23,17 +23,13 @@ $referrer = $_POST['referrer'];
 $date = date('Y-m-d H:i:s');
 $target = "images/" . basename($image);
 
-$usernamecheck = $pdo->query("SELECT `username` FROM `users_tbl` WHERE username='$username'");
+$usernamecheck = $pdo->query("SELECT `username` FROM `users_tbl` WHERE username='$username' OR email='$email'");
 while ($row = $usernamecheck->fetch(pdo::FETCH_ASSOC)) {
-    $usernames[] = $row;
-}
-$emailcheck = $pdo->query("SELECT `username` FROM `users_tbl` WHERE email='$email'");
-while ($row = $emailcheck->fetch(pdo::FETCH_ASSOC)) {
-    $emails[] = $row;
+    $taken[] = $row;
 }
 
-if (isset($usernames) and isset($emails)) {
-    echo $username . " or" . $email . "is already taken";
+if (isset($taken) ) {
+    echo $username . " or " . $email . " is already taken";
 } else {
     try {
 

@@ -1,3 +1,4 @@
+  
 <?php
     $servername = "localhost";
     $DBusername = "root";
@@ -15,5 +16,3 @@
 } catch (PDOException $e) {
     echo $stmt . "<br>" . $e->getMessage();
 }
-
-    ?>

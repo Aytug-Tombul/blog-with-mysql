@@ -34,7 +34,7 @@ function login($tablename, $username, $password)
                 "result" => "success",
                 "username" => $username,
                 
-                "panelBtn"=>'<li class="nav-item active"><a class="nav-link text-white" onclick=openPanel() >Panel<span class="sr-only">(current)</span></a></li>'
+                "panelBtn"=>'<li class="nav-item active"><button type="button" id="panelOpen" class="btn btn-outline-success my-2 my-sm-0" >Panel</button></li>'
             );
         }else{
             $res = array(

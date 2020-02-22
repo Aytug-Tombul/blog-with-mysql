@@ -82,14 +82,116 @@ var registerDiv = `<div id="RegisterStatus">
 </div>
 <br>
 </div>`;
+var buttonsDiv = `
+  <div class="row" style="padding: 10px;">
+  <div class="form-group col-md-3">
+  <button type="button" class="btn btn-primary" id="deleteBtn">
+    Delete
+  </button>
+  </div>
+  <div class="form-group col-md-3">
+             <button type="button" class="btn btn-primary" id="updateBtn">
+               Update
+             </button>
+             </div>
+             </div>`;
 
-var blogDiv = `<div class="container">
-<div id="posts"style="padding: 10px;"></div>
+var blogDiv = `<div id="blog">
+<div class="container">
+<div id="posts" style="padding: 10px;"></div>
 <div class="form-group green-border-focus">
 <textarea class="form-control" id="post" rows="5" placeholder="Write Something Here..."></textarea>
 <button type="button" class="btn btn-primary btn-lg" id="postIt">POST</button>
 </div>
+</div>
 </div>`;
+
+var tableDiv=`<table class="table">
+<thead>
+  <tr>
+    <th scope="col">User Photo</th>
+    <th scope="col">id</th>
+    <th scope="col">Username</th>
+    <th scope="col">Email</th>
+    <th scope="col">Referrer</th>
+    <th scope="col">Role</th>
+  </tr>
+</thead>
+<tbody id="users">
+</tbody>
+</table>` 
+
+
+var modalCreate = ` <!-- The Modal -->
+<div class="modal" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal body -->
+            <div class="modal-body" style="text-align: center;">
+                
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>`;
+
+
+var deleteDiv = `<div class="col-md-6" id="deleteArea" class="row" style="margin: 30px;" >
+    <div class="input-group">
+    <input type="text" class="form-control" placeholder="Input ID" aria-label="ID" aria-describedby="basic-addon2" id="inputDelete">
+<div class="input-group-append">
+  <button class="btn btn-outline-secondary bg-dark text-light" id = "deleteUser"type="button">Delete</button>
+</div>
+</div>
+</div>`;
+
+var updateDiv=`<div class="col-md-6" id="updateArea" class="row" style="margin: 30px;" >
+<div class="input-group">
+<input type="text" class="form-control" placeholder="Input ID" aria-label="ID" aria-describedby="basic-addon2" id="inputID">
+<div class="container">
+            <div class="row text-white">
+                <div  class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
+                    <div class="px-2">
+                        <form class="justify-content-center" method="post" role="form" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="username" placeholder="Username">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="password" placeholder="Password">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="email" placeholder="example@example.com">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="referrer" placeholder="Referrer">
+                            </div>
+                            <div class="form-group">
+                              <input type="file" class="form-control" id="image">
+                            </div>
+                            <button type="button" class="btn btn-primary btn-lg" id="change" >Change</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+</div>
+
+</div>
+
+<br>
+</div>`
+
+function modalSend(_src) {
+  $(".modal-body").empty();
+  var imgCreate = '<img style="width: 300px;" src="' + _src + '">';
+  $(".modal-body").append(imgCreate);
+}
+
+
 var loggedUsername = "";
 $(document).on("click", "#forgotBtn", function() {
   var forgotEmail = $("#forgotEmail").val();
@@ -103,18 +205,11 @@ $(document).on("click", "#forgotBtn", function() {
     }
   });
 });
+$(document).on("click", "#panelOpen", function() {
+  $(".container").remove();
+  getUsers();
+});
 
-function openPanel() {
-  var buttonsDiv = `<div class="form-group col-md-3">
- <button type="button" class="btn btn-primary" id="Delete">
-   Delete
- </button>
- <div class="form-group col-md-3">
-            <button type="button" class="btn btn-primary" id="Update">
-              Update
-            </button>`;
-  $("#blog").append(buttonsDiv);
-}
 
 $(document).on("click", "#login", function() {
   var loginUserName = $("#username").val();
@@ -223,6 +318,113 @@ $(document).on("click", "#postIt", function() {
       $("#posts").empty();
       listPosts();
       $("#post").val("");
+    }
+  });
+});
+
+
+
+
+
+function getUsers(){
+  $.ajax({
+    url: "getUsers.php",
+    type: "GET",
+    success: function(result) {
+      $("#blog").empty();
+      $("#blog").append(buttonsDiv);
+      $("#blog").append(tableDiv);
+      $("#blog").append(modalCreate);
+      var data=JSON.parse(result);
+    for (let i = 0; i < data.length; i++) {
+      var imageSrc = "images/" + data[i].photo;
+      var tableElement =
+        "<tr id=" +
+        data[i].id +
+        ">" +
+        "<td>" +
+        '<img src="' +
+        imageSrc +
+        '" data-toggle="modal" data-target="#myModal" onclick="modalSend(this.src)" style="width: 50px;">' +
+        "</td>" +
+        "<td>" +
+        data[i].id +
+        "</td>" +
+        "<td>" +
+        data[i].username +
+        "</td>" +
+        "<td>" +
+        data[i].email +
+        "</td>" +
+        "<td>" +
+        data[i].referrer +
+        "</td>" +
+        "<td>" +
+        data[i].role +
+        "</td>" +
+        "</tr>";
+      $("#users").append(tableElement);
+    }
+      
+    }
+  });
+}
+
+function backBlog(){
+  $("#blog").remove();
+  $("body").append(blogDiv);
+        listPosts();
+}
+$(document).on("click", "#deleteBtn", function() {
+  $("#deleteArea").remove();
+  $("#blog").append(deleteDiv);
+});
+
+$(document).on("click", "#deleteUser", function() {
+  var deleteID =$("#inputDelete").val();
+  console.log(deleteID);
+  $.ajax({
+    url: "delete.php",
+    type: "POST",
+    data: {  deleteID: deleteID },
+    success: function() {
+     window.alert("User Has Been Deleted")
+     $(".table").remove();
+     getUsers();
+     
+    }
+  });
+});
+$(document).on("click", "#updateBtn", function() {
+  $("#updateArea").remove();
+  $("#blog").append(updateDiv);
+});
+
+$(document).on("click", "#change", function() {
+  var updateID = $("#inputID").val();
+  var images = $("#image")[0].files[0];
+  var usernameVal = $("#username").val();
+  var passwordVal = $("#password").val();
+  var emailVal = $("#email").val();
+  var referrerVal = $("#referrer").val();
+
+  var fd = new FormData();
+  fd.append("username", usernameVal);
+  fd.append("password", passwordVal);
+  fd.append("email", emailVal);
+  fd.append("referrer", referrerVal);
+  fd.append("image", images);
+  fd.append("updateID",updateID);
+  $.ajax({
+    url: "update.php",
+    type: "POST",
+    dataType: "text",
+    data: fd,
+    processData: false,
+    contentType: false,
+    success: function(data) {
+      window.alert(data);
+      getUsers();
     }
   });
 });
