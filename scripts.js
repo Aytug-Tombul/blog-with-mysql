@@ -86,14 +86,24 @@ var buttonsDiv = `
   <div class="row" style="padding: 10px;">
   <div class="form-group col-md-3">
   <button type="button" class="btn btn-primary" id="deleteBtn">
-    Delete
+    Delete User
   </button>
   </div>
   <div class="form-group col-md-3">
              <button type="button" class="btn btn-primary" id="updateBtn">
-               Update
+               Update User
              </button>
              </div>
+             <div class="form-group col-md-3">
+  <button type="button" class="btn btn-primary" id="updatePostBtn">
+    Update Post
+  </button>
+  </div>
+  <div class="form-group col-md-3">
+  <button type="button" class="btn btn-primary" id="deletePostBtn">
+    Delete Post
+  </button>
+  </div>
              </div>`;
 
 var blogDiv = `<div id="blog">
@@ -106,7 +116,7 @@ var blogDiv = `<div id="blog">
 </div>
 </div>`;
 
-var tableDiv=`<table class="table">
+var tableDiv = `<table class="table">
 <thead>
   <tr>
     <th scope="col">User Photo</th>
@@ -119,8 +129,7 @@ var tableDiv=`<table class="table">
 </thead>
 <tbody id="users">
 </tbody>
-</table>` 
-
+</table>`;
 
 var modalCreate = ` <!-- The Modal -->
 <div class="modal" id="myModal">
@@ -138,7 +147,6 @@ var modalCreate = ` <!-- The Modal -->
     </div>
 </div>`;
 
-
 var deleteDiv = `<div class="col-md-6" id="deleteArea" class="row" style="margin: 30px;" >
     <div class="input-group">
     <input type="text" class="form-control" placeholder="Input ID" aria-label="ID" aria-describedby="basic-addon2" id="inputDelete">
@@ -148,7 +156,7 @@ var deleteDiv = `<div class="col-md-6" id="deleteArea" class="row" style="margin
 </div>
 </div>`;
 
-var updateDiv=`<div class="col-md-6" id="updateArea" class="row" style="margin: 30px;" >
+var updateDiv = `<div class="col-md-6" id="updateArea" class="row" style="margin: 30px;" >
 <div class="input-group">
 <input type="text" class="form-control" placeholder="Input ID" aria-label="ID" aria-describedby="basic-addon2" id="inputID">
 <div class="container">
@@ -183,14 +191,13 @@ var updateDiv=`<div class="col-md-6" id="updateArea" class="row" style="margin: 
 </div>
 
 <br>
-</div>`
+</div>`;
 
 function modalSend(_src) {
   $(".modal-body").empty();
   var imgCreate = '<img style="width: 300px;" src="' + _src + '">';
   $(".modal-body").append(imgCreate);
 }
-
 
 var loggedUsername = "";
 $(document).on("click", "#forgotBtn", function() {
@@ -209,7 +216,6 @@ $(document).on("click", "#panelOpen", function() {
   $(".container").remove();
   getUsers();
 });
-
 
 $(document).on("click", "#login", function() {
   var loginUserName = $("#username").val();
@@ -322,11 +328,7 @@ $(document).on("click", "#postIt", function() {
   });
 });
 
-
-
-
-
-function getUsers(){
+function getUsers() {
   $.ajax({
     url: "getUsers.php",
     type: "GET",
@@ -335,45 +337,44 @@ function getUsers(){
       $("#blog").append(buttonsDiv);
       $("#blog").append(tableDiv);
       $("#blog").append(modalCreate);
-      var data=JSON.parse(result);
-    for (let i = 0; i < data.length; i++) {
-      var imageSrc = "images/" + data[i].photo;
-      var tableElement =
-        "<tr id=" +
-        data[i].id +
-        ">" +
-        "<td>" +
-        '<img src="' +
-        imageSrc +
-        '" data-toggle="modal" data-target="#myModal" onclick="modalSend(this.src)" style="width: 50px;">' +
-        "</td>" +
-        "<td>" +
-        data[i].id +
-        "</td>" +
-        "<td>" +
-        data[i].username +
-        "</td>" +
-        "<td>" +
-        data[i].email +
-        "</td>" +
-        "<td>" +
-        data[i].referrer +
-        "</td>" +
-        "<td>" +
-        data[i].role +
-        "</td>" +
-        "</tr>";
-      $("#users").append(tableElement);
-    }
-      
+      var data = JSON.parse(result);
+      for (let i = 0; i < data.length; i++) {
+        var imageSrc = "images/" + data[i].photo;
+        var tableElement =
+          "<tr id=" +
+          data[i].id +
+          ">" +
+          "<td>" +
+          '<img src="' +
+          imageSrc +
+          '" data-toggle="modal" data-target="#myModal" onclick="modalSend(this.src)" style="width: 50px;">' +
+          "</td>" +
+          "<td>" +
+          data[i].id +
+          "</td>" +
+          "<td>" +
+          data[i].username +
+          "</td>" +
+          "<td>" +
+          data[i].email +
+          "</td>" +
+          "<td>" +
+          data[i].referrer +
+          "</td>" +
+          "<td>" +
+          data[i].role +
+          "</td>" +
+          "</tr>";
+        $("#users").append(tableElement);
+      }
     }
   });
 }
 
-function backBlog(){
+function backBlog() {
   $("#blog").remove();
   $("body").append(blogDiv);
-        listPosts();
+  listPosts();
 }
 $(document).on("click", "#deleteBtn", function() {
   $("#deleteArea").remove();
@@ -381,17 +382,16 @@ $(document).on("click", "#deleteBtn", function() {
 });
 
 $(document).on("click", "#deleteUser", function() {
-  var deleteID =$("#inputDelete").val();
+  var deleteID = $("#inputDelete").val();
   console.log(deleteID);
   $.ajax({
     url: "delete.php",
     type: "POST",
-    data: {  deleteID: deleteID },
+    data: { deleteID: deleteID },
     success: function() {
-     window.alert("User Has Been Deleted")
-     $(".table").remove();
-     getUsers();
-     
+      window.alert("User Has Been Deleted");
+      $(".table").remove();
+      getUsers();
     }
   });
 });
@@ -414,7 +414,7 @@ $(document).on("click", "#change", function() {
   fd.append("email", emailVal);
   fd.append("referrer", referrerVal);
   fd.append("image", images);
-  fd.append("updateID",updateID);
+  fd.append("updateID", updateID);
   $.ajax({
     url: "update.php",
     type: "POST",
