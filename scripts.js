@@ -33,6 +33,8 @@ var loginDiv = ` <div id="loginStatus">
 </form>
 </div>`;
 
+var mod =""
+
 var forgotDiv = ` <div id="forgotStatus">
 <form>
 <div class="form-group col-md-3">
@@ -151,8 +153,19 @@ var deleteDiv = `<div class="col-md-6" id="deleteArea" class="row" style="margin
     <div class="input-group">
     <input type="text" class="form-control" placeholder="Input ID" aria-label="ID" aria-describedby="basic-addon2" id="inputDelete">
 <div class="input-group-append">
-  <button class="btn btn-outline-secondary bg-dark text-light" id = "deleteUser"type="button">Delete</button>
+  <button class="btn btn-outline-secondary bg-dark text-light" id = "deleteBtn2"type="button">Delete</button>
 </div>
+</div>
+</div>`;
+
+var updatePostDiv = `<div class="col-md-6" id="updatePostArea" class="row" style="margin: 30px;" >
+    <div class="input-group">
+    <input type="text" class="form-control" placeholder="Input ID" aria-label="ID" aria-describedby="basic-addon2" id="postID">
+    
+<div class="input-group">
+<textarea class="form-control" id="post" rows="5" placeholder="Write Something Here..."></textarea>
+</div>
+<button class="btn btn-outline-secondary bg-dark text-light" id = "updateBtn2"type="button">Update</button>
 </div>
 </div>`;
 
@@ -192,6 +205,10 @@ var updateDiv = `<div class="col-md-6" id="updateArea" class="row" style="margin
 
 <br>
 </div>`;
+
+
+
+
 
 function modalSend(_src) {
   $(".modal-body").empty();
@@ -367,6 +384,7 @@ function getUsers() {
           "</tr>";
         $("#users").append(tableElement);
       }
+      $("#blog").append(deleteDiv);
     }
   });
 }
@@ -377,26 +395,44 @@ function backBlog() {
   listPosts();
 }
 $(document).on("click", "#deleteBtn", function() {
-  $("#deleteArea").remove();
-  $("#blog").append(deleteDiv);
+  getUsers();
+  mod=1
 });
 
-$(document).on("click", "#deleteUser", function() {
+$(document).on("click", "#deletePostBtn", function() {
+  $("#deleteArea").remove();
+  $("#blog").append(deleteDiv);
+  $(".container").empty();
+  $(".table").remove();
+  $("#blog").append(`<div id="posts" style="padding: 10px;"></div>`);
+  listPosts();
+  mod=2
+});
+
+$(document).on("click", "#deleteBtn2", function() {
   var deleteID = $("#inputDelete").val();
   console.log(deleteID);
   $.ajax({
     url: "delete.php",
     type: "POST",
-    data: { deleteID: deleteID },
+    data: { deleteID: deleteID, mode :mod},
     success: function() {
-      window.alert("User Has Been Deleted");
+      if (mod==1) {
+        window.alert("User Has Been Deleted");
       $(".table").remove();
       getUsers();
+      }
+      else if (mod==2) {
+        window.alert("Post Has Been Deleted");
+      $("#posts").empty()
+      listPosts()
+      }
     }
   });
 });
 $(document).on("click", "#updateBtn", function() {
-  $("#updateArea").remove();
+  $("#blog").empty();
+  $("#blog").append(buttonsDiv);
   $("#blog").append(updateDiv);
 });
 
@@ -428,3 +464,25 @@ $(document).on("click", "#change", function() {
     }
   });
 });
+
+$(document).on("click", "#updatePostBtn", function() {
+  $("#blog").empty();
+  $("#blog").append(buttonsDiv);
+  $("#blog").append(updatePostDiv);
+  $("#blog").append(`<div id="posts" style="padding: 10px;"></div>`);
+  listPosts();
+});
+$(document).on("click", "#updateBtn2", function() {
+  var updateID = $("#postID").val();
+  var changePost = $("#post").val();
+  console.log(updateID+" "+changePost);
+  $.ajax({
+    url: "updatePost.php",
+    type: "POST",
+    data: { updateID: updateID, post :changePost},
+    success: function(data) {
+      window.alert(data);
+      listPosts;
+      }
+});
+})
